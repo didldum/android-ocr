@@ -74,7 +74,7 @@ import edu.sfsu.cs.orange.ocr.language.TranslateAsyncTask;
  * 
  * The code for this class was adapted from the ZXing project: http://code.google.com/p/zxing/
  */
-public final class CaptureActivity extends Activity implements SurfaceHolder.Callback, 
+public  class CaptureActivity extends Activity implements SurfaceHolder.Callback, 
   ShutterButton.OnShutterButtonListener {
 
   private static final String TAG = CaptureActivity.class.getSimpleName();
@@ -805,6 +805,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                                                    ocrResult.getCharacterBoundingBoxes()));
 
     Integer meanConfidence = ocrResult.getMeanConfidence();
+	Log.d(TAG,"detected:"+ocrResult.getText());
     
     if (CONTINUOUS_DISPLAY_RECOGNIZED_TEXT) {
       // Display the recognized text on the screen
