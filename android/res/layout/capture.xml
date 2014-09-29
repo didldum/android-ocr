@@ -197,6 +197,15 @@
               android:textSize="14sp"
               android:autoLink="web"   
               android:clickable="true" />
+        <TextView android:id="@+id/status_view_bottom2"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentBottom="true"
+              android:background="#0000"
+              android:text="ERKENNUNG LÄUFT, TELEFON RUHIG HALTEN"
+              android:textColor="@color/status_text"
+              android:textSize="16sp"
+               />
      
      <!-- 
      <ToggleButton android:id="@+id/torch_button"

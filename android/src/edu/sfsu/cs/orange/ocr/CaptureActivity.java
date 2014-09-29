@@ -119,13 +119,13 @@ public  class CaptureActivity extends Activity implements SurfaceHolder.Callback
 
   
   /** Flag to display the real-time recognition results at the top of the scanning screen. */
-  private static final boolean CONTINUOUS_DISPLAY_RECOGNIZED_TEXT = true;
+  public boolean CONTINUOUS_DISPLAY_RECOGNIZED_TEXT = true;
   
   /** Flag to display recognition-related statistics on the scanning screen. */
-  private static final boolean CONTINUOUS_DISPLAY_METADATA = true;
+  public boolean CONTINUOUS_DISPLAY_METADATA = true;
   
   /** Flag to enable display of the on-screen shutter button. */
-  private static final boolean DISPLAY_SHUTTER_BUTTON = true;
+  public boolean DISPLAY_SHUTTER_BUTTON = true;
   
   /** Languages for which Cube data is available. */
   static final String[] CUBE_SUPPORTED_LANGUAGES = { 
@@ -209,6 +209,10 @@ public  class CaptureActivity extends Activity implements SurfaceHolder.Callback
   CameraManager getCameraManager() {
     return cameraManager;
   }
+
+  protected boolean isEnforcedDefaultPreferences() {
+	  return false;
+  }
   
   @Override
   public void onCreate(Bundle icicle) {
@@ -216,7 +220,9 @@ public  class CaptureActivity extends Activity implements SurfaceHolder.Callback
     
     checkFirstLaunch();
     
-    if (isFirstLaunch) {
+    Log.d(TAG,"isEnforced:"+isEnforcedDefaultPreferences());
+    
+    if (isFirstLaunch || isEnforcedDefaultPreferences()) {
       setDefaultPreferences();
     }
     
@@ -640,6 +646,8 @@ public  class CaptureActivity extends Activity implements SurfaceHolder.Callback
     return null;
   }
 
+  public static boolean MUTE_ALL_DIALOGES = false;
+  
   /**
    * Requests initialization of the OCR engine with the given parameters.
    * 
@@ -692,7 +700,9 @@ public  class CaptureActivity extends Activity implements SurfaceHolder.Callback
       indeterminateDialog.setMessage("Initializing " + ocrEngineModeName + " OCR engine for " + languageName + "...");
     }
     indeterminateDialog.setCancelable(false);
-    indeterminateDialog.show();
+    if (!MUTE_ALL_DIALOGES) {
+	    indeterminateDialog.show();
+    }
     
     if (handler != null) {
       handler.quitSynchronously();     
@@ -709,7 +719,7 @@ public  class CaptureActivity extends Activity implements SurfaceHolder.Callback
     
     // Start AsyncTask to install language data and init OCR
     baseApi = new TessBaseAPI();
-    new OcrInitAsyncTask(this, baseApi, dialog, indeterminateDialog, languageCode, languageName, ocrEngineMode)
+   new OcrInitAsyncTask(this, baseApi, dialog, indeterminateDialog, languageCode, languageName, ocrEngineMode)
       .execute(storageRoot.toString());
   }
   
@@ -806,6 +816,7 @@ public  class CaptureActivity extends Activity implements SurfaceHolder.Callback
 
     Integer meanConfidence = ocrResult.getMeanConfidence();
 	Log.d(TAG,"detected:"+ocrResult.getText());
+	detectedTextContinously(ocrResult.getText());
     
     if (CONTINUOUS_DISPLAY_RECOGNIZED_TEXT) {
       // Display the recognized text on the screen
@@ -826,6 +837,8 @@ public  class CaptureActivity extends Activity implements SurfaceHolder.Callback
           meanConfidence.toString() + " - Time required: " + recognitionTimeRequired + " ms");
     }
   }
+  
+  protected void detectedTextContinously(String text) {}
   
   /**
    * Version of handleOcrContinuousDecode for failed OCR requests. Displays a failure message.
@@ -955,7 +968,7 @@ public  class CaptureActivity extends Activity implements SurfaceHolder.Callback
   }
   
   /** Displays a pop-up message showing the name of the current OCR source language. */
-  void showLanguageName() {   
+  protected void showLanguageName() {   
     Toast toast = Toast.makeText(this, "OCR: " + sourceLanguageReadable, Toast.LENGTH_LONG);
     toast.setGravity(Gravity.TOP, 0, 0);
     toast.show();
@@ -1031,7 +1044,7 @@ public  class CaptureActivity extends Activity implements SurfaceHolder.Callback
    * run. The easiest way to do this is to check android:versionCode from the manifest, and compare
    * it to a value stored as a preference.
    */
-  private boolean checkFirstLaunch() {
+  protected boolean checkFirstLaunch() {
     try {
       PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
       int currentVersion = info.versionCode;
@@ -1144,7 +1157,7 @@ public  class CaptureActivity extends Activity implements SurfaceHolder.Callback
   /**
    * Sets default values for preferences. To be called the first time this app is run.
    */
-  private void setDefaultPreferences() {
+  protected void setDefaultPreferences() {
     prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
     // Continuous preview
