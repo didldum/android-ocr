@@ -129,9 +129,9 @@ public  class CaptureActivity extends Activity implements SurfaceHolder.Callback
   
   /** Languages for which Cube data is available. */
   static final String[] CUBE_SUPPORTED_LANGUAGES = { 
-    "ara", // Arabic
-    "eng", // English
-    "hin" // Hindi
+//    "ara", // Arabic
+//    "eng", // English
+//    "hin" // Hindi
   };
 
   /** Languages that require Cube, and cannot run using Tesseract. */

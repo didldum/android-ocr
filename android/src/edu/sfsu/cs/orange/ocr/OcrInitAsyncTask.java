@@ -256,6 +256,7 @@ final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
         // Check for "osd.traineddata.zip"
         osdInstallSuccess = installFromAssets(CaptureActivity.OSD_FILENAME_BASE + ".zip", 
             tessdataDir, new File(CaptureActivity.OSD_FILENAME));
+        Log.d(TAG,"osdInstallSuccess:"+osdInstallSuccess);
       } catch (IOException e) {
         Log.e(TAG, "IOException", e);
       } catch (Exception e) {
@@ -517,7 +518,7 @@ final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
    * @throws IOException
    */
   private void untar(File tarFile, File destinationDir) throws IOException {
-    Log.d(TAG, "Untarring...");
+    Log.d(TAG, "Untarring... "+tarFile);
     final int uncompressedSize = getTarSizeUncompressed(tarFile);
     Integer percentComplete;
     int percentCompleteLast = 0;
@@ -603,6 +604,7 @@ final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
     String extension = sourceFilename.substring(sourceFilename.lastIndexOf('.'), 
         sourceFilename.length());
     try {
+    	Log.d(TAG,"sourceFilename:"+sourceFilename);
       if (extension.equals(".zip")) {
         return installZipFromAssets(sourceFilename, modelRoot, destinationFile);
       } else {
